@@ -54,12 +54,12 @@ class GameOfLifeSpec extends ObjectBehavior
     function it_should_kill_cells_because_of_underpopulation_for_two_dimensions()
     {
         $initWithBoard = [
-            [CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(true)],
-            [CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
+            [CellBuilder::create(false), CellBuilder::create(true)],
+            [CellBuilder::create(true), CellBuilder::create(false)]
         ];
         $nextGenerationBoard = [
-            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(false)],
-            [CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
+            [CellBuilder::create(false), CellBuilder::create(false)],
+            [CellBuilder::create(false), CellBuilder::create(false)]
         ];
 
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
@@ -68,18 +68,18 @@ class GameOfLifeSpec extends ObjectBehavior
     function it_should_kill_cells_because_of_overcrowding()
     {
         $initWithBoard = [
-            [CellBuilder::create(true),  CellBuilder::create(true), CellBuilder::create(true)],
-            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(true)]
+            [CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(true)],
+            [CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(false)]
         ];
         $nextGenerationBoard = [
-            [CellBuilder::create(true),  CellBuilder::create(false), CellBuilder::create(true)],
-            [CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(true)]
+            [CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(false)],
+            [CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
         ];
 
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
     }
 
-    function TODO_it_should_revive_dead_cell_if_there_are_3_live_neighbours()
+    function it_should_revive_dead_cell_if_there_are_3_live_neighbours()
     {
         $initWithBoard = [
             [CellBuilder::create(true),  CellBuilder::create(false), CellBuilder::create(true)],
@@ -88,6 +88,22 @@ class GameOfLifeSpec extends ObjectBehavior
         $nextGenerationBoard = [
             [CellBuilder::create(false),  CellBuilder::create(true), CellBuilder::create(false)],
             [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
+        ];
+
+        $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
+    }
+
+    function it_should_kill_cells_for_3_lines_by_overcrowding()
+    {
+        $initWithBoard = [
+            [CellBuilder::create(true), CellBuilder::create(true)],
+            [CellBuilder::create(true), CellBuilder::create(true)],
+            [CellBuilder::create(true), CellBuilder::create(true)],
+        ];
+        $nextGenerationBoard = [
+            [CellBuilder::create(true), CellBuilder::create(true)],
+            [CellBuilder::create(false), CellBuilder::create(false)],
+            [CellBuilder::create(true), CellBuilder::create(true)]
         ];
 
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
