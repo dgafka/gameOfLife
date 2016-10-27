@@ -56,7 +56,7 @@ class GameOfLifeSpec extends ObjectBehavior
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
     }
 
-    function it_should_kill_cells_because_of_overcrodwing()
+    function it_should_kill_cells_because_of_overcrowding()
     {
         $initWithBoard = [
             [true,  true, true],
