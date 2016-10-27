@@ -32,26 +32,52 @@ class GameOfLifeSpec extends ObjectBehavior
 
     function it_should_survive_two_cells_as_having_two_neighbours()
     {
-        $this->beConstructedWith([[true, true, true, true]]);
-        $this->calculateNextGeneration();
+        $initWithBoard = [
+            [true, true, true, true]
+        ];
+        $nextGenerationBoard = [
+            [false, true, true, false]
+        ];
 
-        $this->currentBoard()->shouldReturn(
-            [[false, true, true, false]]
-        );
+        $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
     }
 
     function it_should_kill_cells_because_of_underpopulation_for_two_dimensions()
     {
-        $this->beConstructedWith([
+        $initWithBoard = [
             [true, true, false, true],
             [false, false, true, false]
-        ]);
-
-        $this->calculateNextGeneration();
-
-        $this->currentBoard()->shouldReturn([
+        ];
+        $nextGenerationBoard = [
             [false, true, false, false],
             [false, false, true, false]
-        ]);
+        ];
+
+        $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
+    }
+
+    function it_should_kill_cells_because_of_overcrodwing()
+    {
+        $initWithBoard = [
+            [true,  true, true],
+            [false, true, true,]
+        ];
+        $nextGenerationBoard = [
+            [true,  false, true],
+            [false, false, true]
+        ];
+
+        $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
+    }
+
+    /**
+     * @param $initWithBoard
+     * @param $nextGenerationBoard
+     */
+    public function generateNextGeneration($initWithBoard, $nextGenerationBoard):void
+    {
+        $this->beConstructedWith($initWithBoard);
+        $this->calculateNextGeneration();
+        $this->currentBoard()->shouldReturn($nextGenerationBoard);
     }
 }

@@ -35,11 +35,11 @@ class GameOfLife
                 ) {
                     $nextGenerationBoard[$lineIndex][$cellInLineIndex] = true;
 
-//                    echo "Line {$lineIndex} with {$cellInLineIndex} is true\n";
+                    echo "Line {$lineIndex} with {$cellInLineIndex} is true\n";
                     continue;
                 }
 
-//                echo "Line {$lineIndex} and {$cellInLineIndex} is false\n";
+                echo "Line {$lineIndex} and {$cellInLineIndex} is false\n";
                 $nextGenerationBoard[$lineIndex][$cellInLineIndex] = false;
             }
         }
@@ -80,11 +80,17 @@ class GameOfLife
      */
     public function isInLifeArea(int $lineIndex, int $cellIndex):bool
     {
-        if ($this->countSurroundingAliveCells($lineIndex, $cellIndex) >= 2) {
-            return true;
+        $surroundingCells = $this->countSurroundingAliveCells($lineIndex, $cellIndex);
+
+        if (
+            $this->isOvercrowded($surroundingCells)
+            ||
+            $this->isUnderpopulated($surroundingCells)
+        ) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -116,5 +122,23 @@ class GameOfLife
     private function isCellAlive(int $lineIndex, int $cellIndex):bool
     {
         return array_key_exists($lineIndex, $this->boardWithCells) && array_key_exists($cellIndex, $this->boardWithCells[$lineIndex]) && ($this->boardWithCells[$lineIndex][$cellIndex] == true);
+    }
+
+    /**
+     * @param $surroundingCells
+     * @return bool
+     */
+    public function isOvercrowded($surroundingCells):bool
+    {
+        return $surroundingCells > 3;
+    }
+
+    /**
+     * @param $surroundingCells
+     * @return bool
+     */
+    public function isUnderpopulated($surroundingCells):bool
+    {
+        return $surroundingCells < 2;
     }
 }
