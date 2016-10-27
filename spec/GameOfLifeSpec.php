@@ -15,7 +15,7 @@ class GameOfLifeSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith([]);
+        $this->beConstructedWith([[]]);
     }
 
     function it_is_initializable()
@@ -26,17 +26,34 @@ class GameOfLifeSpec extends ObjectBehavior
     function it_should_return_next_generation_for_empty_board()
     {
         $this->calculateNextGeneration();
-        $this->currentBoard()->shouldReturn([]);
+        $this->currentBoard()->shouldReturn([[]]);
         $this->generation()->shouldReturn(2);
     }
 
-    function it_should_return_next_generation_for_one_alive_cell()
+    function it_should_survive_two_cells_as_having_two_neighbours()
     {
-        $this->beConstructedWith([false, true, false]);
+        $this->beConstructedWith([[true, true, true, true]]);
         $this->calculateNextGeneration();
 
         $this->currentBoard()->shouldReturn(
-            [false, false, false]
+            [[false, true, true, false]]
         );
     }
+
+    function it_should_kill_cells_because_of_underpopulation_for_two_dimensions()
+    {
+        $this->beConstructedWith([
+            [true, true, false, true],
+            [false, false, true, false]
+        ]);
+
+        $this->calculateNextGeneration();
+
+        $this->currentBoard()->shouldReturn([
+            [false, true, false, false],
+            [false, false, true, false]
+        ]);
+    }
+
+    
 }
