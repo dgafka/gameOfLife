@@ -30,7 +30,7 @@ class GameOfLife
             $nextGenerationBoard[] = [];
             for ($cellInLineIndex = 0; $cellInLineIndex < count($this->boardWithCells[$lineIndex]); $cellInLineIndex++) {
                 if (
-                    $this->boardWithCells[$lineIndex][$cellInLineIndex] == true
+                    $this->isCellAlive($lineIndex, $cellInLineIndex)
                     && $this->isInLifeArea($lineIndex, $cellInLineIndex)
                 ) {
                     $nextGenerationBoard[$lineIndex][$cellInLineIndex] = true;
@@ -96,31 +96,25 @@ class GameOfLife
     {
         $surroundingAliveCells = 0;
 
-        if (array_key_exists($cellIndex - 1, $this->boardWithCells[$lineIndex]) && $this->boardWithCells[$lineIndex][$cellIndex - 1] == true) {
-           $surroundingAliveCells++;
-        }
-        if (array_key_exists($cellIndex + 1, $this->boardWithCells[$lineIndex]) && $this->boardWithCells[$lineIndex][$cellIndex + 1] == true) {
-            $surroundingAliveCells++;
-        }
-        if (array_key_exists($lineIndex + 1, $this->boardWithCells) && array_key_exists($cellIndex, $this->boardWithCells[$lineIndex + 1]) && $this->boardWithCells[$lineIndex + 1][$cellIndex] == true) {
-            $surroundingAliveCells++;
-        }
-        if (array_key_exists($lineIndex - 1, $this->boardWithCells) && array_key_exists($cellIndex, $this->boardWithCells[$lineIndex - 1]) && $this->boardWithCells[$lineIndex - 1][$cellIndex] == true) {
-            $surroundingAliveCells++;
-        }
-        if (array_key_exists($lineIndex + 1, $this->boardWithCells) && array_key_exists($cellIndex - 1, $this->boardWithCells[$lineIndex + 1]) && $this->boardWithCells[$lineIndex + 1][$cellIndex -1] == true) {
-            $surroundingAliveCells++;
-        }
-        if (array_key_exists($lineIndex + 1, $this->boardWithCells) && array_key_exists($cellIndex + 1, $this->boardWithCells[$lineIndex + 1]) && $this->boardWithCells[$lineIndex + 1][$cellIndex + 1] == true) {
-            $surroundingAliveCells++;
-        }
-        if (array_key_exists($lineIndex - 1, $this->boardWithCells) && array_key_exists($cellIndex - 1, $this->boardWithCells[$lineIndex - 1]) && $this->boardWithCells[$lineIndex - 1][$cellIndex -1] == true) {
-            $surroundingAliveCells++;
-        }
-        if (array_key_exists($lineIndex - 1, $this->boardWithCells) && array_key_exists($cellIndex + 1, $this->boardWithCells[$lineIndex - 1]) && $this->boardWithCells[$lineIndex - 1][$cellIndex + 1] == true) {
-            $surroundingAliveCells++;
-        }
+        $surroundingAliveCells += $this->isCellAlive($lineIndex, $cellIndex - 1) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex, $cellIndex + 1) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex - 1, $cellIndex) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex - 1, $cellIndex - 1) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex - 1, $cellIndex + 1) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex + 1, $cellIndex) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex + 1, $cellIndex - 1) ? 1 : 0;
+        $surroundingAliveCells += $this->isCellAlive($lineIndex + 1, $cellIndex + 1) ? 1 : 0;
 
         return $surroundingAliveCells;
+    }
+
+    /**
+     * @param int $lineIndex
+     * @param int $cellIndex
+     * @return bool
+     */
+    private function isCellAlive(int $lineIndex, int $cellIndex):bool
+    {
+        return array_key_exists($lineIndex, $this->boardWithCells) && array_key_exists($cellIndex, $this->boardWithCells[$lineIndex]) && ($this->boardWithCells[$lineIndex][$cellIndex] == true);
     }
 }

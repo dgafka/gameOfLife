@@ -54,6 +54,4 @@ class GameOfLifeSpec extends ObjectBehavior
             [false, false, true, false]
         ]);
     }
-
-    
 }
