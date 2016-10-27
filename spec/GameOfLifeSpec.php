@@ -2,9 +2,11 @@
 
 namespace spec\Madkom;
 
+use Madkom\CellFactory;
 use Madkom\GameOfLife;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use spec\Builder\CellBuilder;
 
 /**
  * Class GameOfLifeSpec
@@ -13,8 +15,15 @@ use Prophecy\Argument;
  */
 class GameOfLifeSpec extends ObjectBehavior
 {
-    function let()
+    /** @var  CellFactory */
+    private $cellFactory;
+
+    function let(CellFactory $cellFactory)
     {
+        $cellFactory->create(true)->willReturn(CellBuilder::create(true));
+        $cellFactory->create(false)->willReturn(CellBuilder::create(false));
+        $this->cellFactory = $cellFactory;
+
         $this->beConstructedWith([[]]);
     }
 
@@ -25,7 +34,7 @@ class GameOfLifeSpec extends ObjectBehavior
 
     function it_should_return_next_generation_for_empty_board()
     {
-        $this->calculateNextGeneration();
+        $this->calculateNextGeneration($this->cellFactory);
         $this->currentBoard()->shouldReturn([[]]);
         $this->generation()->shouldReturn(2);
     }
@@ -33,10 +42,10 @@ class GameOfLifeSpec extends ObjectBehavior
     function it_should_survive_two_cells_as_having_two_neighbours()
     {
         $initWithBoard = [
-            [true, true, true, true]
+            [CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(true)]
         ];
         $nextGenerationBoard = [
-            [false, true, true, false]
+            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(false)]
         ];
 
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
@@ -45,12 +54,12 @@ class GameOfLifeSpec extends ObjectBehavior
     function it_should_kill_cells_because_of_underpopulation_for_two_dimensions()
     {
         $initWithBoard = [
-            [true, true, false, true],
-            [false, false, true, false]
+            [CellBuilder::create(true), CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(true)],
+            [CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
         ];
         $nextGenerationBoard = [
-            [false, true, false, false],
-            [false, false, true, false]
+            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false), CellBuilder::create(false)],
+            [CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
         ];
 
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
@@ -59,12 +68,26 @@ class GameOfLifeSpec extends ObjectBehavior
     function it_should_kill_cells_because_of_overcrowding()
     {
         $initWithBoard = [
-            [true,  true, true],
-            [false, true, true,]
+            [CellBuilder::create(true),  CellBuilder::create(true), CellBuilder::create(true)],
+            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(true)]
         ];
         $nextGenerationBoard = [
-            [true,  false, true],
-            [false, false, true]
+            [CellBuilder::create(true),  CellBuilder::create(false), CellBuilder::create(true)],
+            [CellBuilder::create(false), CellBuilder::create(false), CellBuilder::create(true)]
+        ];
+
+        $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
+    }
+
+    function TODO_it_should_revive_dead_cell_if_there_are_3_live_neighbours()
+    {
+        $initWithBoard = [
+            [CellBuilder::create(true),  CellBuilder::create(false), CellBuilder::create(true)],
+            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
+        ];
+        $nextGenerationBoard = [
+            [CellBuilder::create(false),  CellBuilder::create(true), CellBuilder::create(false)],
+            [CellBuilder::create(false), CellBuilder::create(true), CellBuilder::create(false)]
         ];
 
         $this->generateNextGeneration($initWithBoard, $nextGenerationBoard);
@@ -74,10 +97,10 @@ class GameOfLifeSpec extends ObjectBehavior
      * @param $initWithBoard
      * @param $nextGenerationBoard
      */
-    public function generateNextGeneration($initWithBoard, $nextGenerationBoard):void
+    public function generateNextGeneration($initWithBoard, $nextGenerationBoard) : void
     {
         $this->beConstructedWith($initWithBoard);
-        $this->calculateNextGeneration();
+        $this->calculateNextGeneration($this->cellFactory);
         $this->currentBoard()->shouldReturn($nextGenerationBoard);
     }
 }

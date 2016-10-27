@@ -22,25 +22,25 @@ class GameOfLife
         $this->boardWithCells = $boardWithCells;
     }
 
-
-    public function calculateNextGeneration() : void
+    /**
+     * @param CellFactory $cellFactory
+     */
+    public function calculateNextGeneration(CellFactory $cellFactory) : void
     {
         $nextGenerationBoard = [];
         for ($lineIndex = 0; $lineIndex < count($this->boardWithCells); $lineIndex++) {
             $nextGenerationBoard[] = [];
             for ($cellInLineIndex = 0; $cellInLineIndex < count($this->boardWithCells[$lineIndex]); $cellInLineIndex++) {
                 if (
-                    $this->isCellAlive($lineIndex, $cellInLineIndex)
-                    && $this->isInLifeArea($lineIndex, $cellInLineIndex)
+                    $this->isInLifeArea($lineIndex, $cellInLineIndex)
                 ) {
-                    $nextGenerationBoard[$lineIndex][$cellInLineIndex] = true;
-
+                    $nextGenerationBoard[$lineIndex][$cellInLineIndex] = $cellFactory->create(true);
                     echo "Line {$lineIndex} with {$cellInLineIndex} is true\n";
                     continue;
                 }
 
                 echo "Line {$lineIndex} and {$cellInLineIndex} is false\n";
-                $nextGenerationBoard[$lineIndex][$cellInLineIndex] = false;
+                $nextGenerationBoard[$lineIndex][$cellInLineIndex] = $cellFactory->create(false);
             }
         }
 
@@ -80,7 +80,15 @@ class GameOfLife
      */
     public function isInLifeArea(int $lineIndex, int $cellIndex):bool
     {
-        $surroundingCells = $this->countSurroundingAliveCells($lineIndex, $cellIndex);
+        $surroundingCells = $this->createCellNeighbours($lineIndex, $cellIndex);
+
+        if (!$surroundingCells->centralCell()->isAlive()) {
+            return false;
+        }
+
+        if ($surroundingCells->countAliveNeighbours() === 3) {
+            return true;
+        }
 
         if (
             $this->isOvercrowded($surroundingCells)
@@ -94,51 +102,30 @@ class GameOfLife
     }
 
     /**
-     * @param int $cellIndex
-     * @param int $lineIndex
-     * @return int
+     * @param int $centralLineIndex
+     * @param int $centralCellIndex
+     * @return CellNeighbours
      */
-    private function countSurroundingAliveCells(int $lineIndex, int $cellIndex) : int
+    private function createCellNeighbours(int $centralLineIndex, int $centralCellIndex) : CellNeighbours
     {
-        $surroundingAliveCells = 0;
-
-        $surroundingAliveCells += $this->isCellAlive($lineIndex, $cellIndex - 1) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex, $cellIndex + 1) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex - 1, $cellIndex) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex - 1, $cellIndex - 1) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex - 1, $cellIndex + 1) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex + 1, $cellIndex) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex + 1, $cellIndex - 1) ? 1 : 0;
-        $surroundingAliveCells += $this->isCellAlive($lineIndex + 1, $cellIndex + 1) ? 1 : 0;
-
-        return $surroundingAliveCells;
-    }
-
-    /**
-     * @param int $lineIndex
-     * @param int $cellIndex
-     * @return bool
-     */
-    private function isCellAlive(int $lineIndex, int $cellIndex):bool
-    {
-        return array_key_exists($lineIndex, $this->boardWithCells) && array_key_exists($cellIndex, $this->boardWithCells[$lineIndex]) && ($this->boardWithCells[$lineIndex][$cellIndex] == true);
+        return new CellNeighbours($this->boardWithCells, $centralLineIndex, $centralCellIndex);
     }
 
     /**
      * @param $surroundingCells
      * @return bool
      */
-    public function isOvercrowded($surroundingCells):bool
+    public function isOvercrowded(CellNeighbours $surroundingCells) : bool
     {
-        return $surroundingCells > 3;
+        return $surroundingCells->hasMoreAliveNeighboursThan(3);
     }
 
     /**
      * @param $surroundingCells
      * @return bool
      */
-    public function isUnderpopulated($surroundingCells):bool
+    public function isUnderpopulated(CellNeighbours $surroundingCells) : bool
     {
-        return $surroundingCells < 2;
+        return $surroundingCells->hasLessAliveNeighboursThan(2);
     }
 }
