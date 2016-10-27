@@ -6,7 +6,7 @@ namespace Madkom;
  * Class GameOfLife
  * @package Madkom
  */
-class GameOfLife
+class Game
 {
     /**
      * @var array

@@ -3,7 +3,7 @@
 namespace spec\Madkom;
 
 use Madkom\CellFactory;
-use Madkom\GameOfLife;
+use Madkom\Game;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use spec\Builder\CellBuilder;
@@ -11,9 +11,9 @@ use spec\Builder\CellBuilder;
 /**
  * Class GameOfLifeSpec
  * @package spec\Madkom
- * @mixin GameOfLife
+ * @mixin Game
  */
-class GameOfLifeSpec extends ObjectBehavior
+class GameSpec extends ObjectBehavior
 {
     /** @var  CellFactory */
     private $cellFactory;
@@ -29,7 +29,7 @@ class GameOfLifeSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(GameOfLife::class);
+        $this->shouldHaveType(Game::class);
     }
 
     function it_should_return_next_generation_for_empty_board()
