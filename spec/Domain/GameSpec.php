@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\Madkom;
+namespace spec\Madkom\Domain;
 
-use Madkom\CellFactory;
-use Madkom\Game;
+use Madkom\Domain\CellFactory;
+use Madkom\Domain\Game;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use spec\Builder\CellBuilder;

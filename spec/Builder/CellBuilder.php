@@ -1,7 +1,8 @@
 <?php
 
 namespace spec\Builder;
-use Madkom\Cell;
+
+use Madkom\Domain\Cell;
 
 
 /**
@@ -23,7 +24,6 @@ class CellBuilder
             return self::$cells[$key];
         }
 
-        echo "\n\n I AM HERE \n\n";
         $cell =  new Cell($isAlive);
         self::$cells[$key] = $cell;
         return $cell;

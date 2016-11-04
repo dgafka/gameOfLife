@@ -1,6 +1,6 @@
 <?php
 
-namespace Madkom;
+namespace Madkom\Domain;
 use Webmozart\Assert\Assert;
 
 

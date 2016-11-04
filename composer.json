@@ -5,7 +5,10 @@
     "minimum-stability": "dev",
     "require": {},
     "require-dev": {
-        "phpspec/phpspec": "^3.1.1"
+        "phpspec/phpspec": "^3.1.1",
+        "behat/behat": "^3.2.1",
+        "ramsey/uuid": "^3.5.1",
+        "phpunit/phpunit": "^5.6.2"
     },
     "autoload": {
         "psr-4": {

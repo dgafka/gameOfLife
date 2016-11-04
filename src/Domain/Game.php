@@ -1,6 +1,6 @@
 <?php
 
-namespace Madkom;
+namespace Madkom\Domain;
 
 /**
  * Class GameOfLife
@@ -35,11 +35,9 @@ class Game
                     $this->isInLifeArea($lineIndex, $cellInLineIndex)
                 ) {
                     $nextGenerationBoard[$lineIndex][$cellInLineIndex] = $cellFactory->create(true);
-                    echo "\nLine {$lineIndex} with {$cellInLineIndex} is true\n";
                     continue;
                 }
 
-                echo "\nLine {$lineIndex} and {$cellInLineIndex} is false\n";
                 $nextGenerationBoard[$lineIndex][$cellInLineIndex] = $cellFactory->create(false);
             }
         }
